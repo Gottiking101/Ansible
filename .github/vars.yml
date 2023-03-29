@@ -1,0 +1,9 @@
+---
+# Apache configuration
+website_name: "paymeforthisjob.com"
+website_port: 80
+
+# Nginx configuration
+backend_servers:
+  - { name: "backend1", ip: "192.168.0.1" }
+  - { name: "backend2", ip: "192.168.0.2" }
