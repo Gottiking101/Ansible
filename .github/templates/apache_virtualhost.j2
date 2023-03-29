@@ -1,0 +1,11 @@
+<VirtualHost *:{{ website_port }}>
+    ServerName {{ website_name }}
+    DocumentRoot /var/www/{{ website_name }}
+    ErrorLog ${APACHE_LOG_DIR}/{{ website_name }}-error.log
+    CustomLog ${APACHE_LOG_DIR}/{{ website_name }}-access.log combined
+    <Directory /var/www/{{ website_name }}>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
