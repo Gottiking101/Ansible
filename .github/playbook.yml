@@ -1,1 +1,56 @@
+---
+- name: Install Apache and Nginx
+  hosts: all
+  become: true
+  vars:
+    website_name: "example.com"
+    website_port: 80
+    backend_servers:
+      - { name: "backend1", ip: "192.168.0.1" }
+      - { name: "backend2", ip: "192.168.0.2" }
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+    
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
 
+    - name: Configure Apache
+      lineinfile:
+        path: /etc/apache2/ports.conf
+        regexp: "^Listen "
+        line: "Listen {{ website_port }}"
+        state: present
+      notify:
+        - restart apache
+    
+    - name: Configure virtual host for website
+      template:
+        src: templates/apache_virtualhost.j2
+        dest: /etc/apache2/sites-available/{{ website_name }}.conf
+      notify:
+        - restart apache
+    
+    - name: Enable website virtual host
+      command: a2ensite {{ website_name }}
+    
+    - name: Configure Nginx as a reverse proxy and load balancer
+      template:
+        src: templates/nginx_conf.j2
+        dest: /etc/nginx/conf.d/{{ website_name }}.conf
+      notify:
+        - restart nginx
+    
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+    
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
