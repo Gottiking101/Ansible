@@ -6,7 +6,7 @@ resource "aws_instance" "ansible" {
   ami           = "ami-02f97949d306b597a"
   instance_type = "t2.micro"
   key_name      = "AWSKEY"
-  user_data     = "${file("userdata.sh")}"
+#  user_data     = "${file("userdata.sh")}"
   tags = {
     Name = "ansible-server"
   }
