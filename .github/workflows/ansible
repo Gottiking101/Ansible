@@ -1,0 +1,27 @@
+name: Verify Updates with Super Linter
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  super-linter:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Ansible
+      run: sudo apt update && sudo apt install ansible -y
+
+    - name: Run Ansible playbook
+      run: ansible-playbook playbook.yml
+
+    - name: Install Super Linter
+      run: |
+        curl -s https://raw.githubusercontent.com/github/super-linter/master/install.sh | bash -s -- -v
+
+    - name: Run Super Linter
+      run: |
+        export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        /usr/local/bin/super-linter run
